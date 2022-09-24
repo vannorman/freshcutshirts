@@ -1,0 +1,18 @@
+#content {
+    width:100%; height:100%
+}
+
+#pageTitle {
+    position: relative;
+    margin: 0 auto;
+    font-family: "Bowlby";
+    text-align: center;
+}
+
+#canvas_big {
+    position: absolute;
+	top:0;
+	pointer-events:none;
+	z-index:-100;
+}
+
