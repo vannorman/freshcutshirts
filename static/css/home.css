@@ -6,7 +6,34 @@
     position: relative;
     margin: 0 auto;
     font-family: "Bowlby";
+    font-size: 25px;
     text-align: center;
+}
+
+
+#navBar {
+    display:  inline;
+}
+#navBar ul {
+    display:  inline;
+    list-style-type: none;
+}
+
+#navBar li {
+    display:  inline-block;
+    border:  1px solid #777;
+    width: 130px;
+    height: 30px;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px 0 0px 0;
+    margin-bottom: -5px;
+    line-height: 1.8em;
+}
+
+#navBar li:hover { 
+    background-color: #f70;
+    cursor: pointer;
 }
 
 #canvas_big {
