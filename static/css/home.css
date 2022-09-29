@@ -3,17 +3,18 @@
 }
 
 #pageTitle {
-    position: relative;
     margin: 0 auto;
     font-family: "Bowlby";
     font-size: 25px;
-    text-align: center;
+    max-width: fit-content
 }
 
 
 #navBar {
-    display:  inline;
+    margin:0 auto;
+    max-width: fit-content
 }
+
 #navBar ul {
     display:  inline;
     list-style-type: none;
@@ -43,3 +44,32 @@
 	z-index:-100;
 }
 
+#shirts-container {
+    padding-top:20px;
+    margin: 0 auto;
+    width: 960px;
+}
+
+
+#shirts-container ul {
+    display:  inline;
+    list-style-type: none;
+     list-style: none;
+    padding-left: 0;
+}
+
+#shirts-container ul li {
+    display:  inline-block;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px 0 0px 0;
+    margin-bottom: -5px;
+    line-height: 1.8em;
+}
+
+.shirt {
+    border: 1px dotted black;
+    width:300px;
+    height:400px;
+    background-size: contain;
+}
