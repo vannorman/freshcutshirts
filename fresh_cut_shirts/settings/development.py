@@ -1,7 +1,13 @@
 from .base import *
+print('DEVELOPMENT SETTINGS LOADED')
 
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '143.198.79.233',
+    'freshcutshirts.com',
+    'www.freshcutshirts.com',
+ ]
 
 INSTALLED_APPS += [
     'debug_toolbar'
