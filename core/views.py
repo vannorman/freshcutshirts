@@ -298,6 +298,16 @@ class PaymentView(View):
                 order.save()
 
                 messages.success(self.request, "Your order was successful!")
+
+                # email charlie@vannorman.ai
+                # $name ordered $product on $date for $amount with $address
+                # auto dropship option: https://merchize.com/merchize-api/
+
+
+                # waiting for email API to validate freshcutshirts.com domain https://app.mailersend.com/start
+
+                print("Starting print logs.")
+                print("ship addr:"+str(Address.objects.get(id=order.shipping_address_id)))  #str(order.shipping_address_id))
                 return redirect("/")
 
             except stripe.error.CardError as e:
