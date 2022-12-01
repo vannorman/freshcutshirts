@@ -1,7 +1,4 @@
 from .base import *
-import os
-print('DEVELOPMENT SETTINGS LOADED from thread:' )
-print(os.getpid())
 
 DEBUG = True
 ALLOWED_HOSTS = [
