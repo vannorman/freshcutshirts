@@ -17,6 +17,7 @@ from .models import Item, OrderItem, Order, Address, Payment, Coupon, Refund, Us
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+from mailersend import emails
 
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))
@@ -302,12 +303,59 @@ class PaymentView(View):
                 # email charlie@vannorman.ai
                 # $name ordered $product on $date for $amount with $address
                 # auto dropship option: https://merchize.com/merchize-api/
+                api_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZjhkOTViMGE4ZTIwYjhjZjViMzUyMTEzZWEwMjUwNTA4MThkNjJjZTEwMGM5YzRlZDZlY2EwNDQzZTgzMGQzMmQ1ZGNjZmIwNDc2YjQwMjkiLCJpYXQiOjE2NzExMzE1MjcuMDE4ODg3LCJuYmYiOjE2NzExMzE1MjcuMDE4ODg5LCJleHAiOjQ4MjY4MDUxMjcuMDE1NDEyLCJzdWIiOiI0NzkxNiIsInNjb3BlcyI6WyJlbWFpbF9mdWxsIiwiZG9tYWluc19mdWxsIiwiYWN0aXZpdHlfZnVsbCIsImFuYWx5dGljc19mdWxsIiwidG9rZW5zX2Z1bGwiLCJ3ZWJob29rc19mdWxsIiwidGVtcGxhdGVzX2Z1bGwiLCJzdXBwcmVzc2lvbnNfZnVsbCIsInNtc19mdWxsIiwiZW1haWxfdmVyaWZpY2F0aW9uX2Z1bGwiXX0.HhHFrN2ohhxpqbMSlXdol_HqaH9_3JQxcDNYAp9tlC5cKkuZ4yqRMLqXGbEVoXGda73pEgC-X7oMrOK4XbEV8JoSmF7vECOVE5j5HTlx9GODNKVITnTIcJqYp5teUYVb2lwXBMITmWi4kE1pJXwLBUJMZ1cFUtt7yC_TWpgTB2d7DpJcknX7Pusedm46nEhE_AFCakXZ89I9DwVnxjOtLrhgawD18rtPhULk54H-_0ypyeA86SLxEim8I5eVoIV7RpHUpCV1PLotgBxHX_-t89Tvdx5gv2X3M-1eTh-8JRr9-7Sbh-6VFFF8SM-SskulkE5oqcvc6-CuZyPbRC4hj0JjHqg1Dg8010ukhzPKi5rvr7FlDPPvPTjAjKrOEKi1w3qWAiwBURk5ZtH23DJjCX-t5C9GO_Hgbi2ppi1xeMsbHrC2K8VdwTbSh0CyY2Nh0PgE8gZfphM5adPYeswXWrUAkZHcX1uoexZY3HMgE_5jo9uxDBVu8VAXtyWT05EVltzujwjV8bj3awL7hOqrupxrkgBMvqVb6gMusZk01h2ZjwYwI7LjtwGH2uvxjSggkgdkS-tDbQFP-woclG4DfZ8i2fiMYndFX0Uh8e2xl6_9PGV7EvZmQFXxwMKIfq0r5EZb8dVpYFFqg2y9Bos3Teb3cBQ8heSr-jKrmE4m61s"
+                mailer = emails.NewEmail(api_key)
 
+                # define an empty dict to populate with mail values
+                mail_body = {}
 
+                mail_from = {
+                    "name": "Fresh Cut Shirts",
+                    "email": "NO_REPLY@freshcutshirts.com",
+                }
+
+                recipients = [
+                    {
+                        "name": "Client",
+                        "email": "ccvannorman@gmail.com",
+                    },
+                    {
+                        "name": "Charlie ",
+                        "email": "charlie@vannorman.ai",
+                
+                    }
+                ]
+
+                reply_to = [
+                    {
+                        "name": "Fresh Cut Shirts",
+                        "email": "freshcutshirts@gmail.com",
+                    }
+                ]
+                
+                subject = "Thanks for your purchase!"
+                message = "Thanks for buying our PIKACHU SHIRT! Plz don't sue us. Your tracking number is #. reply to us at freshcutshirts@gmail.com with any questions."
+
+                mailer.set_mail_from(mail_from, mail_body)
+                mailer.set_mail_to(recipients, mail_body)
+                mailer.set_subject(subject, mail_body)
+                mailer.set_html_content(message, mail_body)
+                mailer.set_plaintext_content(message, mail_body)
+                mailer.set_reply_to(reply_to, mail_body)
+
+                mailer.send(mail_body)
                 # waiting for email API to validate freshcutshirts.com domain https://app.mailersend.com/start
 
                 print("Starting print logs.")
-                print("ship addr:"+str(Address.objects.get(id=order.shipping_address_id)))  #str(order.shipping_address_id))
+                # print("ship addr:"+str(Address.objects.get(id=order.shipping_address_id)))  #str(order.shipping_address_id))
+
+                # dropship options
+                # https://www.printful.com/dashboard/sync?store=9313269&push=1 - bad UX, dont let me add "large center deisgn" file. Pricing $11-16
+                # https://app.customcat.com/app/186181/main/dashboard - bad UX, couldn't figure out how to connect product to API
+                # 5 options: https://blog.shift4shop.com/5-best-print-on-demand-t-shirt-drop-shipping-services
+                # https://printaura.com/api/ - least painful so far
+                # 
+
                 return redirect("/")
 
             except stripe.error.CardError as e:
@@ -348,7 +396,7 @@ class PaymentView(View):
             except Exception as e:
                 # send an email to ourselves
                 messages.warning(
-                    self.request, "A serious error occurred. We have been notifed.")
+                    self.request, "A serious error occurred. We have been notifed. Error: "+str(e))
                 return redirect("/")
 
         messages.warning(self.request, "Invalid data received")
